@@ -16,4 +16,6 @@ echo ${#}
 # $# is the number of inputs
 echo ${#}
 
+if [ $0 ]
+
 
