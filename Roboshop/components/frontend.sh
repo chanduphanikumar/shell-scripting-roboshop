@@ -1,19 +1,31 @@
-#!\bin/bash
+#!/bin/bash
 
+# source is nothing but import , like export command
+source components/common.sh
 
-yum install nginx -y
+yum install nginx -y &>>${LOG_FILE}
+STAT_CHECK $? "Nginx Installation"
 
-if [ $? -ne 0]; than
-echo "Nginx install failed"
-exit 1
-f1
+DOWNLOAD frontend
 
+rm -rf /usr/share/nginx/html/*
+STAT_CHECK $? "Remove old HTML Pages"
 
-curl -s -L -o /tmp/frontend.zip "https://github.com/roboshop-devops-project/frontend/archive/main.zi"
-Deploy in Nginx Default Location.
-if [ $? -ne 0 ] ; than
-echo "download frontend failed"
-exit 1
-f1
+cd  /tmp/frontend-main/static/ && cp -r * /usr/share/nginx/html/
+STAT_CHECK $? "Copying Frontend Content"
 
+cp /tmp/frontend-main/localhost.conf /etc/nginx/default.d/roboshop.conf
+STAT_CHECK $? "Copy Nginx Config File"
 
+for component in catalogue cart user shipping payment ; do
+  sed -i -e "/${component}/ s/localhost/${component}.roboshop.internal/" /etc/nginx/default.d/roboshop.conf
+done
+STAT_CHECK $? "Update Nginx Config File"
+
+systemctl enable nginx &>>${LOG_FILE} && systemctl restart nginx &>>${LOG_FILE}
+STAT_CHECK $? "Restart Nginx"
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
