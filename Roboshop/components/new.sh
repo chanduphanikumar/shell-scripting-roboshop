@@ -3,7 +3,7 @@
 
 yum install nginx -y
 
-if [ $? -ne 0]; than
+if [ $? -ne 0 ]; than
 echo "Nginx install failed"
 exit 1
 f1
