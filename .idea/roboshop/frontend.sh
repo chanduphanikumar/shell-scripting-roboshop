@@ -14,3 +14,5 @@ if [ ${USER_UID} -ne 0 ]; than
 fi
 
 yum install nginx -y
+
+
